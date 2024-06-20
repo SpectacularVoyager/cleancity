@@ -63,7 +63,7 @@ public class AuthenicationController {
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
         UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("USER").build();
         if (users.userExists(user.getUsername())) {
-            return ResponseEntity.badRequest().body("USER ALREADY EXISTS");
+            return ResponseEntity.badRequest().body(Map.of("error","primary_key","desc","USER ALREADY EXISTS"));
         }
         users.createUser(details);
         user.insertDetails(template);
@@ -71,19 +71,19 @@ public class AuthenicationController {
     }
 
 
-    /**
-     * RESPONSE HANDLER FOR MethodArgumentNotValidException.class
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
+//    /**
+//     * RESPONSE HANDLER FOR MethodArgumentNotValidException.class
+//     */
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public Map<String, String> handleValidationExceptions(
+//            MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getDefaultMessage();
+//            errors.put(fieldName, errorMessage);
+//        });
+//        return errors;
+//    }
 }

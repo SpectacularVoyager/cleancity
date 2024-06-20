@@ -27,13 +27,17 @@ public class Exceptions extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 //        var apiError = new ApiError(HttpStatus.resolve(status.value()), ex.getMessage());
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+        Map<String, Map<String, String>> errors = new HashMap<>();
 
-        return new ResponseEntity<>(errors, status);
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getDefaultMessage();
+//            Map<String, String> obj = Map.of("error", fieldName, "des", errorMessage);
+//            errors.put(fieldName, obj);
+//        });
+        FieldError error = (FieldError) ex.getBindingResult().getAllErrors().get(0);
+        return new ResponseEntity<>(Map.of("error", error.getField(), "desc", error.getDefaultMessage()), status);
+
+//        return new ResponseEntity<>(errors, status);
     }
 }
