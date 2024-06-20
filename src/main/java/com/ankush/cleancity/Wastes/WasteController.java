@@ -1,5 +1,6 @@
 package com.ankush.cleancity.Wastes;
 
+import com.ankush.cleancity.Features.FeatureService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

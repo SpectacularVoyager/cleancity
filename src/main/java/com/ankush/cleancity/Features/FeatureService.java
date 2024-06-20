@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 
-//@Component("FeatureService")
+@Component("FeatureService")
 public class FeatureService {
     @Getter
     City city;
