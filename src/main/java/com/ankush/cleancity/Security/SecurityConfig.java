@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/java/api/waste/**").permitAll()
 //                        .requestMatchers("/java/api/user/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
-                        .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/java/api/mail/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
