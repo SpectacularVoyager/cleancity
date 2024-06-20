@@ -40,6 +40,7 @@ public class UserSpaceController {
 
     @PostMapping("complain")
     public ResponseEntity<?> complain(@Valid Waste w) {
+        log.info(w.toString());
         AuthUser user = getUser(template);
         w.setUsername(user.getUsername());
         try {
