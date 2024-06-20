@@ -61,6 +61,20 @@ public class AnalyticsController {
         return map;
     }
 
+    @GetMapping("types")
+    public Map<String, Float> types() {
+        Map<String, Long> map =
+                template.query("select type,count(*) as count from WasteType wt group by type", new NamedParameterRowMapper("type", "count", Long.class))
+                        .stream().collect(Collectors.toMap(x -> x.getKey(), x -> (Long) x.getVal()));
+        float sum = (float) map.values().stream().reduce(0L, Long::sum);
+        Map<String, Float> ret = new HashMap<>();
+        for (Map.Entry<String, Long> e : map.entrySet()) {
+            ret.put(e.getKey(), e.getValue() * 100.0f / sum);
+        }
+        return ret;
+    }
+
+
     private Map<String, Long> summariseField(String f) {
         return template.query(String.format("select %s,count(*) as count from Wastes w group by %s", f, f),
                         new NamedParameterRowMapper(f, "count", Long.class)
@@ -69,4 +83,5 @@ public class AnalyticsController {
                         NamedParameter::getKey, x -> (Long) x.getVal()
                 ));
     }
+
 }
