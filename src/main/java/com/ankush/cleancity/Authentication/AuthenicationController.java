@@ -63,7 +63,7 @@ public class AuthenicationController {
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
         UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("USER").build();
         if (users.userExists(user.getUsername())) {
-            return ResponseEntity.badRequest().body(Map.of("error","primary_key","desc","USER ALREADY EXISTS"));
+            return ResponseEntity.badRequest().body(Map.of("error","username","desc","USER ALREADY EXISTS"));
         }
         users.createUser(details);
         user.insertDetails(template);
