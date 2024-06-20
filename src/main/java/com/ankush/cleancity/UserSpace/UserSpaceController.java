@@ -1,6 +1,8 @@
 package com.ankush.cleancity.UserSpace;
 
 import com.ankush.cleancity.Features.FeatureService;
+import com.ankush.cleancity.Query.NamedParameter;
+import com.ankush.cleancity.Query.NamedParameterRowMapper;
 import com.ankush.cleancity.Users.AuthUser;
 import com.ankush.cleancity.Users.UserController;
 import com.ankush.cleancity.Users.UserMapper;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("java/api/userspace")
@@ -33,6 +37,7 @@ public class UserSpaceController {
 
     UserMapper userMapper = new UserMapper();
     WasteMapper wasteMapper = new WasteMapper();
+    NamedParameterRowMapper issueStatus = new NamedParameterRowMapper("status", "count", Long.class);
 
 
     public static String getQuery(String where) {
@@ -87,6 +92,18 @@ public class UserSpaceController {
     @GetMapping("get")
     public AuthUser get() {
         return getUser(template);
+    }
+
+    @GetMapping("issueSum")
+    public Map<String, Long> getIssues() {
+        Map<String, Long> ret = template.query("select status,count(*) as count from Wastes w where username = ? group by status", issueStatus, get().getUsername()).stream().
+                collect(Collectors.toMap(
+                        NamedParameter::getKey, x -> (Long) x.getVal()
+                ));
+        ret.putIfAbsent("COMPLETE", 0L);
+        ret.putIfAbsent("PENDING", 0L);
+        ret.putIfAbsent("TOTAL", ret.values().stream().reduce(0L, Long::sum));
+        return ret;
     }
 
 

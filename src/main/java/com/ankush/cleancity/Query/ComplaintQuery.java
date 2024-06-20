@@ -16,11 +16,19 @@ import java.util.*;
 public class ComplaintQuery {
     private List<@In(values = {"HIGH", "MEDIUM", "LOW"}) String> severity;
     private List<@In(values = {"COMPLETE", "PENDING"}) String> status;
-    private List<@In(values = {"DRY","PLANT","CLOTHES", "WET","CONSTRUCTION","MEDICAL","SANITARY"}) String> wasteType;
+    private List<@In(values = {"DRY", "PLANT", "CLOTHES", "WET", "CONSTRUCTION", "MEDICAL", "SANITARY"}) String> wasteType;
     @NotBlank
     private String location;
     private Date time1;
     private Date time2;
+    private static final String BASE = "select w.*,GROUP_CONCAT(wt.type) as types from Wastes w right join WasteType wt on w.id = wt.id group by w.id";
+
+    public static String getQuery(String where) {
+        return String.format(BASE + " where " +
+                where +
+                " group by w.id");
+    }
+
 
     public CompiledQuery compile() {
         List<Object> objects = new ArrayList<>();
@@ -29,7 +37,11 @@ public class ComplaintQuery {
         addInCond("w.status", objects, where, status);
         addInCond("wt.type", objects, where, wasteType);
         addEqualsString("w.location", objects, where, location);
-        addDateCond("w.reported",objects,where, time1, time2);
+        addDateCond("w.reported", objects, where, time1, time2);
+
+        if (where.isEmpty()) {
+            return new CompiledQuery(BASE, new Object[0]);
+        }
         return new CompiledQuery(UserSpaceController.getQuery(String.join(" AND ", where)), objects.toArray());
     }
 
