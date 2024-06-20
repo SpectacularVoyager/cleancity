@@ -21,7 +21,7 @@ public class Waste {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     private String username;
-    @NotBlank
+
     private String location;
     @JsonUnwrapped
     private Coordinates coordinates;
