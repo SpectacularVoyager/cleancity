@@ -25,7 +25,7 @@ public class AdminSpaceController {
         throw new UnsupportedOperationException();
     }
 
-    @GetMapping("markComplete")
+    @PostMapping("markComplete")
     public void markComplete(@RequestParam long id,@RequestParam String url) {
         template.update("update wastes set status=? where id=?", "COMPLETE", id);
     }

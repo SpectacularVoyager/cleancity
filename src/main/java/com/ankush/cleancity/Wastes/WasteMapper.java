@@ -14,7 +14,7 @@ public class WasteMapper implements RowMapper<Waste> {
         Waste w = new Waste();
         w.setUsername(rs.getString("w.username"));
         w.setId(rs.getLong("w.id"));
-        w.setCoordinates(new Coordinates(rs.getLong("w.latitude"), rs.getLong("w.longitude")));
+        w.setCoordinates(new Coordinates(rs.getFloat("w.latitude"), rs.getFloat("w.longitude")));
         w.setReported(rs.getDate("w.reported"));
         w.setTypes(List.of(rs.getString("types").split(",")));
         w.setLocation(rs.getString("w.location"));
