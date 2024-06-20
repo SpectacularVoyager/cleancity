@@ -20,13 +20,13 @@ public class AdminSpaceController {
     WasteMapper wasteMapper = new WasteMapper();
 
 
-    @GetMapping("markInvalid/{id}")
-    public void markInvalid(@PathVariable long id) {
+    @GetMapping("markInvalid")
+    public void markInvalid(@RequestParam long id,@RequestParam String url) {
         throw new UnsupportedOperationException();
     }
 
-    @GetMapping("markComplete/{id}")
-    public void markComplete(@PathVariable long id) {
+    @GetMapping("markComplete")
+    public void markComplete(@RequestParam long id,@RequestParam String url) {
         template.update("update wastes set status=? where id=?", "COMPLETE", id);
     }
 
@@ -34,7 +34,9 @@ public class AdminSpaceController {
     public List<Waste> complaints(@RequestBody ComplaintQuery query) {
         CompiledQuery c = query.compile();
         System.out.println(c);
-        return template.query(c.getBase(), wasteMapper, c.getValues());
+        List<Waste> l= template.query(c.getBase(), wasteMapper, c.getValues());
+        System.out.println(l);
+        return l;
     }
 
 }
