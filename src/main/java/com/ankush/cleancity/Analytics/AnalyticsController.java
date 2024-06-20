@@ -37,6 +37,7 @@ public class AnalyticsController {
                 ));
         ret.putIfAbsent("COMPLETE", 0L);
         ret.putIfAbsent("PENDING", 0L);
+        ret.putIfAbsent("TOTAL", ret.values().stream().reduce(0L, Long::sum));
         return ret;
     }
 
@@ -54,7 +55,7 @@ public class AnalyticsController {
     }
 
     @GetMapping("summarise")
-    public Map<String, Long> summarize(@RequestParam @In(values={"severity","status"}) String col) {
+    public Map<String, Long> summarize(@RequestParam @In(values = {"severity", "status"}) String col) {
         Map<String, Long> map = summariseField(col);
         map.put("TOTAL", map.values().stream().reduce(0L, Long::sum));
         return map;
