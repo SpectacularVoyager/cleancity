@@ -68,9 +68,18 @@ public class AnalyticsController {
                         .stream().collect(Collectors.toMap(x -> x.getKey(), x -> (Long) x.getVal()));
         float sum = (float) map.values().stream().reduce(0L, Long::sum);
         Map<String, Float> ret = new HashMap<>();
-        for (Map.Entry<String, Long> e : map.entrySet()) {
-            ret.put(e.getKey(), e.getValue() * 100.0f / sum);
+        if (sum != 0) {
+            for (Map.Entry<String, Long> e : map.entrySet()) {
+                ret.put(e.getKey(), e.getValue() * 100.0f / sum);
+            }
         }
+        ret.putIfAbsent("DRY", 0f);
+        ret.putIfAbsent("PLANT", 0f);
+        ret.putIfAbsent("CONSTRUCTION", 0f);
+        ret.putIfAbsent("WET", 0f);
+        ret.putIfAbsent("CLOTHES", 0f);
+        ret.putIfAbsent("SANITARY", 0f);
+        ret.putIfAbsent("MEDICAL", 0f);
         return ret;
     }
 
