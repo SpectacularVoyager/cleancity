@@ -20,7 +20,6 @@ import java.util.*;
 public class Waste {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
-    @NotBlank
     private String username;
     @NotBlank
     private String location;
