@@ -56,8 +56,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .formLogin(x->x.loginPage("http://localhost:3000/login"))
-//                .httpBasic(Customizer.withDefaults())
+//                .formLogin(x->x.loginPage("/login").permitAll())
+                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(x -> x
                         .requestMatchers("/java/api/test/**").permitAll()
                         .requestMatchers("/java/api/auth/**").permitAll()
@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/java/api/mail/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+//                        .requestMatchers("/login*").permitAll()
                 ).build();
     }
 }
