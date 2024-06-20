@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 public class WasteController {
     @Autowired
     JdbcTemplate template;
+    @Autowired
+    FeatureService service;
 
     @PostMapping("add")
     public Waste addWaste(@Valid @RequestBody Waste w) {
@@ -23,7 +25,11 @@ public class WasteController {
     public void markComplete(@PathVariable long id) {
         Waste.markComplete(template, id);
     }
+
     @GetMapping("test")
-    public String test(){return "TEST";}
+    public String test() {
+        System.out.println(service);
+        return "TEST";
+    }
 
 }
