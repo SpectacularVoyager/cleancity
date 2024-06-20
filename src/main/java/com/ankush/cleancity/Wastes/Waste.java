@@ -34,10 +34,11 @@ public class Waste {
     @In(values = {"COMPLETE", "PENDING"})
     private String status;
     private Date reported;
-    private List<@In(values = {"DRY","PLANT","CLOTHES", "WET","CONSTRUCTION","MEDICAL","SANITARY"}) String> types=new ArrayList<>();
+    private List<@In(values = {"DRY", "PLANT", "CLOTHES", "WET", "CONSTRUCTION", "MEDICAL", "SANITARY"}) String> types = new ArrayList<>();
 
     public void insert(FeatureService featureService, JdbcTemplate template) {
         this.status = "PENDING";
+        this.reported = new Date(System.currentTimeMillis());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(template).withTableName("Wastes").usingColumns(
                         "username", "location", "latitude", "longitude", "severity", "status", "reported")
                 .usingGeneratedKeyColumns("id");
