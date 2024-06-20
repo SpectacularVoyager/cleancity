@@ -1,5 +1,6 @@
 package com.ankush.cleancity.UserSpace;
 
+import com.ankush.cleancity.Features.FeatureService;
 import com.ankush.cleancity.Users.AuthUser;
 import com.ankush.cleancity.Users.UserController;
 import com.ankush.cleancity.Users.UserMapper;
@@ -26,6 +27,8 @@ import java.util.Optional;
 @Slf4j
 public class UserSpaceController {
     @Autowired
+    FeatureService featureService;
+    @Autowired
     JdbcTemplate template;
 
     UserMapper userMapper = new UserMapper();
@@ -44,7 +47,7 @@ public class UserSpaceController {
         AuthUser user = getUser(template);
         w.setUsername(user.getUsername());
         try {
-            w.insert(template);
+            w.insert(featureService, template);
         } catch (Exception e) {
             log.error("SQL ERROR", e);
             return ResponseEntity.badRequest().body(String.format("COULD NOT ADD %s", w));

@@ -17,7 +17,7 @@ public class WasteController {
     @PostMapping("add")
     public Waste addWaste(@Valid @RequestBody Waste w) {
         w.setUsername("ankush");
-        w.insert(template);
+        w.insert(service, template);
         return w;
     }
 

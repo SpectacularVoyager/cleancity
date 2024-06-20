@@ -21,8 +21,6 @@ import java.util.*;
 @Setter
 @ToString
 public class Waste {
-    @Autowired
-    FeatureService featureService;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
@@ -38,7 +36,7 @@ public class Waste {
     private Date reported;
     private List<@In(values = {"DRY", "WET"}) String> types;
 
-    public void insert(JdbcTemplate template) {
+    public void insert(FeatureService featureService, JdbcTemplate template) {
         this.status = "PENDING";
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(template).withTableName("Wastes").usingColumns(
                         "username", "location", "latitude", "longitude", "severity", "status", "reported")
