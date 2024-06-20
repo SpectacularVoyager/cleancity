@@ -33,6 +33,7 @@ public class AdminSpaceController {
     @PostMapping("getComplaints")
     public List<Waste> complaints(@RequestBody ComplaintQuery query) {
         CompiledQuery c = query.compile();
+        System.out.println(c);
         return template.query(c.getBase(), wasteMapper, c.getValues());
     }
 

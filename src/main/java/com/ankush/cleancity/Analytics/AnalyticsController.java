@@ -110,7 +110,7 @@ public class AnalyticsController {
                         }
                 ).stream().collect(Collectors.toMap(x -> x.date, x -> x));
         Date d = list.get(max[0]).getDate();
-        System.out.println(d);
+
         for (int i = 0; i < 14; i++) {
             list.putIfAbsent(d, new r(new Timestamp(d.getTime()), 0, 0));
             d = previousDateString(d);

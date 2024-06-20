@@ -36,13 +36,13 @@ public class ComplaintQuery {
     private static void addDateCond(String col, List<Object> objects, List<String> where, Date d1, Date d2) {
         if (d1 == null && d2 == null) return;
         if (d2 == null) {
-            where.add(String.format(" where %s > ? ", col));
+            where.add(String.format(" %s > ? ", col));
             objects.add(d1);
         } else if (d1 == null) {
-            where.add(String.format(" where %s < ? ", col));
+            where.add(String.format(" %s < ? ", col));
             objects.add(d2);
         } else {
-            where.add(String.format(" where %s between ? and ? ", col));
+            where.add(String.format(" %s between ? and ? ", col));
             objects.add(d1);
             objects.add(d2);
         }
