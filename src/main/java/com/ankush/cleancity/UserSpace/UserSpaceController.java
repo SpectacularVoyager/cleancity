@@ -38,7 +38,7 @@ public class UserSpaceController {
                 " group by w.id");
     }
 
-
+    @PostMapping("complain")
     public ResponseEntity<?> complain(@Valid Waste w) {
         AuthUser user = getUser(template);
         w.setUsername(user.getUsername());
@@ -79,6 +79,7 @@ public class UserSpaceController {
                 Utils.getUser().getUsername(), status);
 
     }
+
     @GetMapping("get")
     public AuthUser get() {
         return getUser(template);

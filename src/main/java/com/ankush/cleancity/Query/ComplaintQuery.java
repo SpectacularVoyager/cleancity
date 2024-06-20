@@ -16,20 +16,20 @@ import java.util.*;
 public class ComplaintQuery {
     private List<@In(values = {"HIGH", "MEDIUM", "LOW"}) String> severity;
     private List<@In(values = {"COMPLETE", "PENDING"}) String> status;
-    private List<@In(values = {"DRY", "WET"}) String> types;
+    private List<@In(values = {"DRY", "WET"}) String> wasteType;
     @NotBlank
     private String location;
-    private Date before;
-    private Date after;
+    private Date time1;
+    private Date time2;
 
     public CompiledQuery compile() {
         List<Object> objects = new ArrayList<>();
         List<String> where = new ArrayList<>();
         addInCond("w.severity", objects, where, severity);
         addInCond("w.status", objects, where, status);
-        addInCond("wt.type", objects, where, types);
+        addInCond("wt.type", objects, where, wasteType);
         addEqualsString("w.location", objects, where, location);
-        addDateCond("w.reported",objects,where,before, after);
+        addDateCond("w.reported",objects,where, time1, time2);
         return new CompiledQuery(UserSpaceController.getQuery(String.join(" AND ", where)), objects.toArray());
     }
 
