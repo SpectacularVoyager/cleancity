@@ -16,7 +16,7 @@ import java.util.*;
 public class ComplaintQuery {
     private List<@In(values = {"HIGH", "MEDIUM", "LOW"}) String> severity;
     private List<@In(values = {"COMPLETE", "PENDING"}) String> status;
-    private List<@In(values = {"DRY", "WET"}) String> wasteType;
+    private List<@In(values = {"DRY","PLANT","CLOTHES", "WET","CONSTRUCTION","MEDICAL","SANITARY"}) String> wasteType;
     @NotBlank
     private String location;
     private Date time1;
