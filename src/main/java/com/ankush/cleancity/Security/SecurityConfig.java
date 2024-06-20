@@ -56,8 +56,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                .formLogin(x->x.loginPage("http://localhost:3000/login"))
+//                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(x -> x
                         .requestMatchers("/java/api/test/**").permitAll()
                         .requestMatchers("/java/api/auth/**").permitAll()
