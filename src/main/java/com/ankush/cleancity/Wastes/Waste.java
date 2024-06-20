@@ -33,6 +33,7 @@ public class Waste {
     private List<@In(values={"DRY","WET"}) String> types;
 
     public void insert(JdbcTemplate template) {
+        this.status="PENDING";
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(template).withTableName("Wastes").usingColumns(
                         "username", "location", "latitude", "longitude", "severity", "status", "reported")
                 .usingGeneratedKeyColumns("id");

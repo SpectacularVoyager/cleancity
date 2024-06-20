@@ -20,7 +20,7 @@ public class InValidator implements ConstraintValidator<In, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         log.info(value);
-        if (value == null) return false;
+        if (value == null) return true;
         for (String x : values) {
             if (value.equalsIgnoreCase(x)) return true;
         }
