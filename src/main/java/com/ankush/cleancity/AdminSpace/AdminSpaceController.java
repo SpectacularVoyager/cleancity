@@ -21,20 +21,20 @@ public class AdminSpaceController {
 
 
     @GetMapping("markInvalid")
-    public void markInvalid(@RequestParam long id,@RequestParam String url) {
+    public void markInvalid(@RequestParam long id, @RequestParam String url) {
         throw new UnsupportedOperationException();
     }
 
     @PostMapping("markComplete")
-    public void markComplete(@RequestParam long id,@RequestParam String url) {
-        template.update("update wastes set status=? where id=?", "COMPLETE", id);
+    public void markComplete(@RequestBody IDWithUrl id) {
+        template.update("update wastes set status=? where id=?", "COMPLETE", id.getId());
     }
 
     @PostMapping("getComplaints")
     public List<Waste> complaints(@RequestBody ComplaintQuery query) {
         CompiledQuery c = query.compile();
         System.out.println(c);
-        List<Waste> l= template.query(c.getBase(), wasteMapper, c.getValues());
+        List<Waste> l = template.query(c.getBase(), wasteMapper, c.getValues());
         System.out.println(l);
         return l;
     }
