@@ -1,5 +1,7 @@
 package com.ankush.cleancity.Wastes;
 
+import com.ankush.cleancity.Features.Feature.Feature;
+import com.ankush.cleancity.Features.FeatureService;
 import com.ankush.cleancity.Utils.In.In;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -8,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
@@ -18,6 +21,9 @@ import java.util.*;
 @Setter
 @ToString
 public class Waste {
+    @Autowired
+    FeatureService featureService;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     private String username;
@@ -39,6 +45,7 @@ public class Waste {
                 .usingGeneratedKeyColumns("id");
         ;
         Map<String, Object> values = new HashMap<>();
+        this.location = featureService.getFromCoords("pune", coordinates.getLatitude(), coordinates.getLongitude()).map(Feature::getName).orElse("NOT IN WARD");
 //        values.put("id", 10);
         values.put("username", username);
         values.put("location", location);
