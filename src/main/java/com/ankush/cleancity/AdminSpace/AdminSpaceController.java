@@ -1,8 +1,11 @@
 package com.ankush.cleancity.AdminSpace;
 
+import com.ankush.cleancity.MailStuff.MailBean;
 import com.ankush.cleancity.Query.CompiledQuery;
 import com.ankush.cleancity.Query.ComplaintQuery;
 import com.ankush.cleancity.Utils.Utils;
+import com.ankush.cleancity.Wastes.EmailedWaste;
+import com.ankush.cleancity.Wastes.EmailedWasteMapper;
 import com.ankush.cleancity.Wastes.Waste;
 import com.ankush.cleancity.Wastes.WasteMapper;
 import jakarta.validation.Valid;
@@ -25,6 +28,9 @@ public class AdminSpaceController {
     @Autowired
     JdbcTemplate template;
     WasteMapper wasteMapper = new WasteMapper();
+    EmailedWasteMapper emailedWasteMapper = new EmailedWasteMapper();
+    @Autowired
+    MailBean mails;
 
 
     @PostMapping("markInvalid")
@@ -43,7 +49,13 @@ public class AdminSpaceController {
     @PostMapping("markComplete")
     public void markComplete(@RequestBody IDWithUrl id) {
         template.update("update Wastes set status=?,solved_image_url=?,resolved_id=?,resolved_time=? where id=?",
-                "COMPLETE", id.url, Utils.getUser().getUsername(),new Timestamp(System.currentTimeMillis()), id.getId());
+                "COMPLETE", id.url, Utils.getUser().getUsername(), new Timestamp(System.currentTimeMillis()), id.getId());
+        EmailedWaste w = template.queryForObject("select u.email,w.*,group_concat(wt.type) as types from Wastes w right join WasteType wt on wt.id=w.id right join UserDetails u on u.username =w.username where w.id=? group by (wt.id)",
+                emailedWasteMapper,
+                id.getId()
+        );
+        mails.notifyComplaint(w);
+        System.out.println(w);
     }
 
     @PostMapping("getComplaints")
