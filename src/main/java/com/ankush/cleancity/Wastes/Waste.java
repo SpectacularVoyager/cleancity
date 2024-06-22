@@ -36,6 +36,20 @@ public class Waste {
     private Date reported;
     private List<@In(values = {"DRY", "PLANT", "CLOTHES", "WET", "CONSTRUCTION", "MEDICAL", "SANITARY"}) String> types = new ArrayList<>();
 
+    boolean dustbinNearby;
+    boolean dustbinOverflow;
+    boolean pmcCleanSite;
+    String siteCleanFrequency = "";
+    String siteUncleanDuration = "";
+    String wasteRecyclable = "";
+    String imageURL;
+    String resolvedImageURL;
+    String geohash;
+    String invalidComplaintMessage = "";
+    String siteType;
+    private String resolved_id;
+
+
     public void insert(FeatureService featureService, JdbcTemplate template) {
         this.status = "PENDING";
         this.reported = new Date(System.currentTimeMillis());
@@ -53,6 +67,20 @@ public class Waste {
         values.put("severity", severity);
         values.put("status", status);
         values.put("reported", reported);
+        values.put("dustbin_nearby", dustbinNearby);
+        values.put("dustbinNearby", dustbinNearby);
+        values.put("dustbinOverflow", dustbinOverflow);
+        values.put("pmcCleanSite", pmcCleanSite);
+        values.put("siteCleanFrequency", siteCleanFrequency);
+        values.put("siteUncleanDuration", siteUncleanDuration);
+        values.put("wasteRecyclable", wasteRecyclable);
+        values.put("imageURL", imageURL);
+        values.put("resolvedImageURL", resolvedImageURL);
+        values.put("geohash", geohash);
+        values.put("invalidComplaintMessage", invalidComplaintMessage);
+        values.put("siteType", siteType);
+        values.put("resolved_id", resolved_id);
+
         simpleJdbcInsert.compile();
         id = simpleJdbcInsert.executeAndReturnKey(values).longValue();
         for (String x : types) {
@@ -60,12 +88,12 @@ public class Waste {
         }
     }
 
-    public void markComplete(JdbcTemplate template) {
-        markComplete(template, this.id);
-    }
+//    public void markComplete(JdbcTemplate template) {
+//        markComplete(template, this.id);
+//    }
 
-    public static void markComplete(JdbcTemplate template, long id) {
-        template.update("update Wastes set status=? where id=?", "COMPLETE", id);
+    public static void markComplete(JdbcTemplate template, long id, String res_id) {
+        template.update("update Wastes set status=?,resolved_id=? where id=?", "COMPLETE", id, res_id);
     }
 
 }

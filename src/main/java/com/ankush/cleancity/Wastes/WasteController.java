@@ -1,6 +1,7 @@
 package com.ankush.cleancity.Wastes;
 
 import com.ankush.cleancity.Features.FeatureService;
+import com.ankush.cleancity.Utils.Utils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +24,7 @@ public class WasteController {
 
     @GetMapping("complete/{id}")
     public void markComplete(@PathVariable long id) {
-        Waste.markComplete(template, id);
+        Waste.markComplete(template, id, Utils.getUser().getUsername());
     }
 
     @GetMapping("test")
