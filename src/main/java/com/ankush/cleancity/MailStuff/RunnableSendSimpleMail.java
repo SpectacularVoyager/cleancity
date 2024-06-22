@@ -21,7 +21,7 @@ public class RunnableSendSimpleMail implements Runnable {
     public void run() {
         try {
             mailSender.send(message);
-            log.info("SENT MAIL TO:" + Arrays.toString(message.getTo()));
+            log.info("SENT MAIL TO:{}", Arrays.toString(message.getTo()));
         } catch (Exception e) {
             log.error("ERROR SENDING MAIL", e);
         }
