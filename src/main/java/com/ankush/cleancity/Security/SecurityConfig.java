@@ -1,5 +1,8 @@
 package com.ankush.cleancity.Security;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,16 +14,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration          //MARK AS CONFIGURATION FILE
 @EnableWebSecurity      //ENABLE SECURITY
@@ -61,10 +67,12 @@ public class SecurityConfig {
                     x.loginPage("/login");
 //                    x.loginPage("http://localhost:3000/login");
                     x.loginProcessingUrl("/java/api/auth/login_page");
-//                    x.failureUrl("/error.html");
+                    x.successHandler((a,b,c)->{});
+                    x.failureHandler((a,b,c)->{});
                 })
-                .logout(x->{
-                    x.logoutUrl("/java/api/auth/logout");
+                .logout(x -> {
+                    x.logoutUrl("/java/api/auth/logout").permitAll();
+                    x.logoutSuccessHandler((a,b,c)->{});
                 })
 
 //                .formLogin(x->x.loginPage("/login").permitAll())
@@ -91,6 +99,7 @@ public class SecurityConfig {
                                 .requestMatchers("/java/api/mail/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/java/api/auth/login_page").permitAll()
+                                .requestMatchers("/login").permitAll()
 //                        .requestMatchers("/login*").permitAll()
                 ).build();
     }
