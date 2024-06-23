@@ -58,8 +58,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .formLogin(x -> {
-                    x.loginPage("/login.html");
+                    x.loginPage("/login");
+//                    x.loginPage("http://localhost:3000/login");
                     x.loginProcessingUrl("/java/api/auth/login_page");
+//                    x.failureUrl("/error.html");
+                })
+                .logout(x->{
+                    x.logoutUrl("/java/api/auth/logout");
                 })
 
 //                .formLogin(x->x.loginPage("/login").permitAll())
@@ -70,7 +75,7 @@ public class SecurityConfig {
 ////                                .defaultSuccessUrl("/java/api/home/hello")
 ////                                .failureUrl("/error.html")
 //                )
-                .httpBasic(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
                 .userDetailsService(userDetailsManager)
                 .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(x -> x
@@ -85,8 +90,7 @@ public class SecurityConfig {
                                 .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER", "ADMIN")
                                 .requestMatchers("/java/api/mail/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
-                                .requestMatchers("/login.html").permitAll()
-                                .requestMatchers("/error.html").permitAll()
+                                .requestMatchers("/java/api/auth/login_page").permitAll()
 //                        .requestMatchers("/login*").permitAll()
                 ).build();
     }
