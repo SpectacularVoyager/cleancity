@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,6 +21,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class Waste {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -54,12 +56,16 @@ public class Waste {
         this.status = "PENDING";
         this.reported = new Date(System.currentTimeMillis());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(template).withTableName("Wastes").usingColumns(
-                        "username", "location", "latitude", "longitude", "severity", "status", "reported")
+                        "username", "location", "latitude", "longitude", "severity", "status", "reported",
+                        "dustbin_nearby", "dustbin_overflow", "pmc_clean_site", "site_clean_frequency", "site_unclean_duration", "description", "complaint_url_image", "solved_image_url", "geohash", "invalid_complaint_msg", "site_type", "resolved_id"
+                )
                 .usingGeneratedKeyColumns("id");
         ;
         Map<String, Object> values = new HashMap<>();
+
         this.location = featureService.getFromCoords("pune", coordinates.getLatitude(), coordinates.getLongitude()).map(Feature::getName).orElse("NOT IN WARD");
 //        values.put("id", 10);
+        log.info(this.toString());
         values.put("username", username);
         values.put("location", location);
         values.put("latitude", coordinates.getLatitude());
@@ -68,17 +74,16 @@ public class Waste {
         values.put("status", status);
         values.put("reported", reported);
         values.put("dustbin_nearby", dustbinNearby);
-        values.put("dustbinNearby", dustbinNearby);
-        values.put("dustbinOverflow", dustbinOverflow);
-        values.put("pmcCleanSite", pmcCleanSite);
-        values.put("siteCleanFrequency", siteCleanFrequency);
-        values.put("siteUncleanDuration", siteUncleanDuration);
-        values.put("wasteRecyclable", wasteRecyclable);
-        values.put("imageURL", imageURL);
-        values.put("resolvedImageURL", resolvedImageURL);
+        values.put("dustbin_overflow", dustbinOverflow);
+        values.put("pmc_clean_site", pmcCleanSite);
+        values.put("site_clean_frequency", siteCleanFrequency);
+        values.put("site_unclean_duration", siteUncleanDuration);
+        values.put("description", wasteRecyclable);
+        values.put("complaint_url_image", imageURL);
+        values.put("solved_image_url", resolvedImageURL);
         values.put("geohash", geohash);
-        values.put("invalidComplaintMessage", invalidComplaintMessage);
-        values.put("siteType", siteType);
+        values.put("invalid_complaint_msg", invalidComplaintMessage);
+        values.put("site_type", siteType);
         values.put("resolved_id", resolved_id);
 
         simpleJdbcInsert.compile();

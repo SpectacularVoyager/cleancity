@@ -66,23 +66,20 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .formLogin(x -> {
-                    x.loginPage("/login");
-//                    x.loginPage("http://localhost:3000/login");
-                    x.loginProcessingUrl("/java/api/auth/login_page");
-                    x.successHandler((a,b,c)->{});
-                    x.failureHandler(new AuthenticationFailureHandler() {
-                        @Override
-                        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                            response.getOutputStream().println("Username or password incorrect");
-                        }
-                    });
-                })
-                .logout(x -> {
-                    x.logoutUrl("/java/api/auth/logout").permitAll();
-                    x.logoutSuccessHandler((a,b,c)->{});
-                })
+//                .formLogin(x -> {
+//                    x.loginPage("/login");
+////                    x.loginPage("http://localhost:3000/login");
+//                    x.loginProcessingUrl("/java/api/auth/login_page");
+//                    x.successHandler((a,b,c)->{});
+//                    x.failureHandler((request, response, exception) -> {
+//                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                        response.getOutputStream().println("Username or password incorrect");
+//                    });
+//                })
+//                .logout(x -> {
+//                    x.logoutUrl("/java/api/auth/logout").permitAll();
+//                    x.logoutSuccessHandler((a,b,c)->{});
+//                })
 
 //                .formLogin(x->x.loginPage("/login").permitAll())
 //                .formLogin(x ->
@@ -92,7 +89,8 @@ public class SecurityConfig {
 ////                                .defaultSuccessUrl("/java/api/home/hello")
 ////                                .failureUrl("/error.html")
 //                )
-//                .httpBasic(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .userDetailsService(userDetailsManager)
                 .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(x -> x

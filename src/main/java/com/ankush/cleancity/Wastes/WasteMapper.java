@@ -20,6 +20,7 @@ public class WasteMapper implements RowMapper<Waste> {
         w.setLocation(rs.getString("w.location"));
         w.setStatus(rs.getString("w.status"));
         w.setSeverity(rs.getString("w.severity"));
+        w.setImageURL(rs.getString("w.complaint_url_image"));
 
 //        boolean dustbinNearby;
         w.setDustbinNearby(rs.getBoolean("w.dustbin_nearby"));
