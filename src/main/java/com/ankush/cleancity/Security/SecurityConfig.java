@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,7 @@ import javax.sql.DataSource;
 @EnableJdbcHttpSession  //ENABLE JDBC SESSIONS
 public class SecurityConfig {
     @Bean
-    public PasswordEncoder password(){
+    public PasswordEncoder password() {
         return new BCryptPasswordEncoder();
 //        return NoOpPasswordEncoder.getInstance();
     }
@@ -52,24 +53,40 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain chain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain chain(HttpSecurity http, @Autowired UserDetailsManager userDetailsManager, @Autowired AuthenticationManager authenticationManager, @Autowired PasswordEncoder passwordEncoder) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
+                .formLogin(x -> {
+                    x.loginPage("/login.html");
+                    x.loginProcessingUrl("/java/api/auth/login_page");
+                })
+
 //                .formLogin(x->x.loginPage("/login").permitAll())
+//                .formLogin(x ->
+//                        x
+//                                .loginPage("/login.html").permitAll()
+////                                .loginProcessingUrl("/java/api/auth/perform_login")
+////                                .defaultSuccessUrl("/java/api/home/hello")
+////                                .failureUrl("/error.html")
+//                )
                 .httpBasic(Customizer.withDefaults())
+                .userDetailsService(userDetailsManager)
+                .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers("/java/api/test/**").permitAll()
-                        .requestMatchers("/java/api/auth/**").permitAll()
-                        .requestMatchers("/java/api/home/**").hasAnyAuthority("USER","ADMIN")
+                                .requestMatchers("/java/api/test/**").permitAll()
+                                .requestMatchers("/java/api/auth/**").permitAll()
+                                .requestMatchers("/java/api/home/**").hasAnyAuthority("USER", "ADMIN")
 //                        .requestMatchers("/java/api/waste/**").hasAnyAuthority("USER")
-                        .requestMatchers("/java/api/waste/**").permitAll()
+                                .requestMatchers("/java/api/waste/**").permitAll()
 //                        .requestMatchers("/java/api/user/**").hasAnyAuthority("USER","ADMIN")
-                        .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
-                        .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("USER","ADMIN")
-                        .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER","ADMIN")
-                        .requestMatchers("/java/api/mail/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
+                                .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/java/api/mail/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/login.html").permitAll()
+                                .requestMatchers("/error.html").permitAll()
 //                        .requestMatchers("/login*").permitAll()
                 ).build();
     }

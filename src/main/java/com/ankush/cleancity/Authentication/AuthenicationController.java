@@ -43,21 +43,21 @@ public class AuthenicationController {
     @Autowired
     AuthenticationManager authenticationManager;
 
-    @GetMapping("login")
-    public ResponseEntity<?> login(HttpServletRequest request, @RequestParam String userName, @RequestParam String password) {
-
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
-
-        try {
-            // Authenticate the user
-            Authentication authentication = authenticationManager.authenticate(authRequest);
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authentication);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(403).body("LOGGED IN");
-        }
-        return ResponseEntity.ok("OK");
-    }
+//    @GetMapping("login")
+//    public ResponseEntity<?> login(HttpServletRequest request, @RequestParam String userName, @RequestParam String password) {
+//
+//        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+//
+//        try {
+//            // Authenticate the user
+//            Authentication authentication = authenticationManager.authenticate(authRequest);
+//            SecurityContext securityContext = SecurityContextHolder.getContext();
+//            securityContext.setAuthentication(authentication);
+//        } catch (BadCredentialsException e) {
+//            return ResponseEntity.status(403).body("LOGGED IN");
+//        }
+//        return ResponseEntity.ok("OK");
+//    }
 
     @PostMapping("signup")
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
