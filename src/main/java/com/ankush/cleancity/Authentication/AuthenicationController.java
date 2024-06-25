@@ -1,6 +1,7 @@
 package com.ankush.cleancity.Authentication;
 
 import com.ankush.cleancity.Users.AuthUser;
+import com.ankush.cleancity.Utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -27,8 +28,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RequestMapping("java/api/auth")
 @RestController
@@ -63,11 +63,18 @@ public class AuthenicationController {
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
         UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("USER").build();
         if (users.userExists(user.getUsername())) {
-            return ResponseEntity.badRequest().body(Map.of("error","username","desc","USER ALREADY EXISTS"));
+            return ResponseEntity.badRequest().body(Map.of("error", "username", "desc", "USER ALREADY EXISTS"));
         }
         users.createUser(details);
         user.insertDetails(template);
         return ResponseEntity.ok("CREATED USER");
+    }
+
+    @GetMapping("getAuths")
+    public List<String> auths() {
+        User user = Utils.getUser();
+        if (user == null) return new ArrayList<>();
+        return Arrays.stream(template.queryForObject("select group_concat(authority) from authorities where username =? group by username", String.class, user.getUsername()).split(",")).toList();
     }
 
 

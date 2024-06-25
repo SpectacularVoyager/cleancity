@@ -61,6 +61,61 @@ public class SecurityConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    /**
+     * PROD
+     *
+     * @Bean public SecurityFilterChain chain(HttpSecurity http, @Autowired UserDetailsManager userDetailsManager, @Autowired AuthenticationManager authenticationManager, @Autowired PasswordEncoder passwordEncoder) throws Exception {
+     * return http
+     * .csrf(AbstractHttpConfigurer::disable)
+     * .cors(AbstractHttpConfigurer::disable)
+     * .formLogin(x -> {
+     * x.loginPage("/login");
+     * //                    x.loginPage("http://localhost:3000/login");
+     * x.loginProcessingUrl("/java/api/auth/login_page");
+     * x.successHandler((a,b,c)->{});
+     * x.failureHandler((request, response, exception) -> {
+     * response.setStatus(HttpStatus.UNAUTHORIZED.value());
+     * response.getOutputStream().println("Username or password incorrect");
+     * });
+     * })
+     * .logout(x -> {
+     * x.logoutUrl("/java/api/auth/logout").permitAll();
+     * x.logoutSuccessHandler((a,b,c)->{});
+     * })
+     * <p>
+     * //                .formLogin(x->x.loginPage("/login").permitAll())
+     * //                .formLogin(x ->
+     * //                        x
+     * //                                .loginPage("/login.html").permitAll()
+     * ////                                .loginProcessingUrl("/java/api/auth/perform_login")
+     * ////                                .defaultSuccessUrl("/java/api/home/hello")
+     * ////                                .failureUrl("/error.html")
+     * //                )
+     * //                .formLogin(Customizer.withDefaults())
+     * .httpBasic(Customizer.withDefaults())
+     * .userDetailsService(userDetailsManager)
+     * .authenticationManager(authenticationManager)
+     * .authorizeHttpRequests(x -> x
+     * .requestMatchers("/java/api/test/**").permitAll()
+     * .requestMatchers("/java/api/auth/**").permitAll()
+     * .requestMatchers("/java/api/home/**").hasAnyAuthority("USER", "ADMIN")
+     * //                        .requestMatchers("/java/api/waste/**").hasAnyAuthority("USER")
+     * .requestMatchers("/java/api/waste/**").permitAll()
+     * //                        .requestMatchers("/java/api/user/**").hasAnyAuthority("USER","ADMIN")
+     * .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
+     * .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("ADMIN")
+     * .requestMatchers("/java/api/analytics/**").hasAnyAuthority("ADMIN")
+     * .requestMatchers("/java/api/mail/**").permitAll()
+     * .requestMatchers("/actuator/**").permitAll()
+     * .requestMatchers("/java/api/auth/login_page").permitAll()
+     * .requestMatchers("/login").permitAll()
+     * .requestMatchers("/java/api/cheats/**").permitAll()
+     * .requestMatchers("/java/api/rootspace/**").hasAnyAuthority("ROOT")
+     * .requestMatchers("/java/api/managerspace/**").hasAnyAuthority("MANAGER")
+     * //                        .requestMatchers("/login*").permitAll()
+     * ).build();
+     * }
+     */
     @Bean
     public SecurityFilterChain chain(HttpSecurity http, @Autowired UserDetailsManager userDetailsManager, @Autowired AuthenticationManager authenticationManager, @Autowired PasswordEncoder passwordEncoder) throws Exception {
         return http
@@ -70,7 +125,8 @@ public class SecurityConfig {
                     x.loginPage("/login");
 //                    x.loginPage("http://localhost:3000/login");
                     x.loginProcessingUrl("/java/api/auth/login_page");
-                    x.successHandler((a,b,c)->{});
+                    x.successHandler((a, b, c) -> {
+                    });
                     x.failureHandler((request, response, exception) -> {
                         response.setStatus(HttpStatus.UNAUTHORIZED.value());
                         response.getOutputStream().println("Username or password incorrect");
@@ -78,7 +134,8 @@ public class SecurityConfig {
                 })
                 .logout(x -> {
                     x.logoutUrl("/java/api/auth/logout").permitAll();
-                    x.logoutSuccessHandler((a,b,c)->{});
+                    x.logoutSuccessHandler((a, b, c) -> {
+                    });
                 })
 
 //                .formLogin(x->x.loginPage("/login").permitAll())
@@ -90,26 +147,11 @@ public class SecurityConfig {
 ////                                .failureUrl("/error.html")
 //                )
 //                .formLogin(Customizer.withDefaults())
-//                .httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .userDetailsService(userDetailsManager)
                 .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(x -> x
-                                .requestMatchers("/java/api/test/**").permitAll()
-                                .requestMatchers("/java/api/auth/**").permitAll()
-                                .requestMatchers("/java/api/home/**").hasAnyAuthority("USER", "ADMIN")
-//                        .requestMatchers("/java/api/waste/**").hasAnyAuthority("USER")
-                                .requestMatchers("/java/api/waste/**").permitAll()
-//                        .requestMatchers("/java/api/user/**").hasAnyAuthority("USER","ADMIN")
-                                .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
-                                .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("ADMIN")
-                                .requestMatchers("/java/api/analytics/**").hasAnyAuthority("ADMIN")
-                                .requestMatchers("/java/api/mail/**").permitAll()
-                                .requestMatchers("/actuator/**").permitAll()
-                                .requestMatchers("/java/api/auth/login_page").permitAll()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/java/api/cheats/**").permitAll()
-                                .requestMatchers("/java/api/rootspace/**").hasAnyAuthority("ROOT")
-                                .requestMatchers("/java/api/managerspace/**").hasAnyAuthority("MANAGER")
+                                .requestMatchers("/java/api/**").permitAll()
 //                        .requestMatchers("/login*").permitAll()
                 ).build();
     }
