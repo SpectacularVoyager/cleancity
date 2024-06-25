@@ -72,9 +72,14 @@ public class AuthenicationController {
 
     @GetMapping("getAuths")
     public List<String> auths() {
-        User user = Utils.getUser();
-        if (user == null) return new ArrayList<>();
-        return Arrays.stream(template.queryForObject("select group_concat(authority) from authorities where username =? group by username", String.class, user.getUsername()).split(",")).toList();
+        try {
+            User user = Utils.getUser();
+
+            if (user == null) return new ArrayList<>();
+            return Arrays.stream(template.queryForObject("select group_concat(authority) from authorities where username =? group by username", String.class, user.getUsername()).split(",")).toList();
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
 
