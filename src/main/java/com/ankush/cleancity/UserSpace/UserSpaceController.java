@@ -1,6 +1,8 @@
 package com.ankush.cleancity.UserSpace;
 
 import com.ankush.cleancity.Features.FeatureService;
+import com.ankush.cleancity.MailStuff.MailBean;
+import com.ankush.cleancity.MailStuff.MailController;
 import com.ankush.cleancity.PythonServer.PythonBean;
 import com.ankush.cleancity.PythonServer.PythonRESTObject;
 import com.ankush.cleancity.PythonServer.PythonRESTResponse;
@@ -11,6 +13,7 @@ import com.ankush.cleancity.Users.UserController;
 import com.ankush.cleancity.Users.UserMapper;
 import com.ankush.cleancity.Utils.In.In;
 import com.ankush.cleancity.Utils.Utils;
+import com.ankush.cleancity.Wastes.EmailedWaste;
 import com.ankush.cleancity.Wastes.Waste;
 import com.ankush.cleancity.Wastes.WasteMapper;
 import jakarta.validation.Valid;
@@ -19,10 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +50,9 @@ public class UserSpaceController {
     @Autowired
     PythonBean pythonBean;
 
+    @Autowired
+    MailBean mailBean;
+
     public static String getQuery(String where) {
         return String.format("select w.*,GROUP_CONCAT(wt.type) as types from Wastes w right join WasteType wt on w.id = wt.id where " +
                 where +
@@ -62,12 +70,17 @@ public class UserSpaceController {
             log.error("SQL ERROR", e);
             return ResponseEntity.badRequest().body(String.format("COULD NOT ADD %s", w));
         }
-        log.info("ADDED {}",w);
+        log.info("ADDED {}", w);
+        template.query("select ud.email from authorities a left join UserDetails ud on ud.username =a.username where a.authority in('MANAGER')",
+                (rs, rowNum) -> rs.getString("email")
+        ).forEach(x -> mailBean.complaintRaised(x, w));
+        ;
         new Thread(() -> {
             PythonRESTResponse res = pythonBean.getPythonResponse(new PythonRESTObject(w.getImageURL()));
             if (!res.getDetected().trim().equalsIgnoreCase("clean environment")) {
                 w.setInvalidAI(true);
                 template.update("update Wastes set invalid_ai=true where id=?", w.getId());
+                mailBean.notifyInvalidAI(EmailedWaste.get(template, w.getId()));
             }
             log.info("WASTE {}", res);
         }).start();

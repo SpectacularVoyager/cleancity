@@ -37,6 +37,9 @@ public class AdminSpaceController {
     public void markInvalid(@RequestBody InvalidComplaint complaint) {
         template.update("update Wastes set status=?,invalid_complaint_msg=?,resolved_id=?,resolved_time=? where id=?",
                 "COMPLETE", complaint.getMsg(), Utils.getUser().getUsername(), new Timestamp(System.currentTimeMillis()), complaint.getId());
+        EmailedWaste w = EmailedWaste.get(template, complaint.getId());
+        mails.notifyInvalidPerson(w);
+
     }
 
     @NoArgsConstructor
@@ -50,10 +53,11 @@ public class AdminSpaceController {
     public void markComplete(@RequestBody IDWithUrl id) {
         template.update("update Wastes set status=?,solved_image_url=?,resolved_id=?,resolved_time=? where id=?",
                 "COMPLETE", id.url, Utils.getUser().getUsername(), new Timestamp(System.currentTimeMillis()), id.getId());
-        EmailedWaste w = template.queryForObject("select u.email,w.*,group_concat(wt.type) as types from Wastes w right join WasteType wt on wt.id=w.id right join UserDetails u on u.username =w.username where w.id=? group by (wt.id)",
-                emailedWasteMapper,
-                id.getId()
-        );
+//        EmailedWaste w = template.queryForObject("select u.email,w.*,group_concat(wt.type) as types from Wastes w right join WasteType wt on wt.id=w.id right join UserDetails u on u.username =w.username where w.id=? group by (wt.id)",
+//                emailedWasteMapper,
+//                id.getId()
+//        );
+        EmailedWaste w = EmailedWaste.get(template, id.getId());
         mails.notifyComplaint(w);
         System.out.println(w);
     }
