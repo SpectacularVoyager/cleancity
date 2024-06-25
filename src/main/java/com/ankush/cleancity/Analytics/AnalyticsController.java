@@ -109,13 +109,21 @@ public class AnalyticsController {
                             return _r;
                         }
                 ).stream().collect(Collectors.toMap(x -> x.date, x -> x));
+        if (list.isEmpty()) {
+            Date d = new Date();
+            List<r> l = new ArrayList<>();
+            for (int i = 0; i < 14; i++) {
+                l.add(new r(new Timestamp(d.getTime()), 0, 0));
+            }
+            return l.stream().sorted(Comparator.comparingLong(x -> x.date.getTime())).toList();
+        }
         Date d = list.get(max[0]).getDate();
 
         for (int i = 0; i < 14; i++) {
             list.putIfAbsent(d, new r(new Timestamp(d.getTime()), 0, 0));
             d = previousDateString(d);
         }
-        return list.values().stream().sorted(Comparator.comparingLong(x->x.date.getTime())).limit(14).toList();
+        return list.values().stream().sorted(Comparator.comparingLong(x -> x.date.getTime())).limit(14).toList();
     }
 
     private static Date previousDateString(Date myDate) {
