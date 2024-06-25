@@ -65,7 +65,7 @@ public class UserSpaceController {
         log.info("ADDED {}",w);
         new Thread(() -> {
             PythonRESTResponse res = pythonBean.getPythonResponse(new PythonRESTObject(w.getImageURL()));
-            if (res.getDetected().trim().equalsIgnoreCase("clean environment")) {
+            if (!res.getDetected().trim().equalsIgnoreCase("clean environment")) {
                 w.setInvalidAI(true);
                 template.update("update Wastes set invalid_ai=true where id=?", w.getId());
             }
