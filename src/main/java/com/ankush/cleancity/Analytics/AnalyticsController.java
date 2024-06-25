@@ -89,10 +89,11 @@ public class AnalyticsController {
 
     @GetMapping("res_tot")
     public List<r> total() {
+        int len=7;
         Date[] max = new Date[1];
         max[0] = new Date(0);
         Map<Date, r> list =
-                template.query("select reported,GROUP_CONCAT(status) as status ,GROUP_CONCAT(count) as count from (select date(reported) as reported,status,COUNT(*) as count from Wastes w group by date(reported),status  limit 14) a GROUP BY reported order by reported desc"
+                template.query("select reported,GROUP_CONCAT(status) as status ,GROUP_CONCAT(count) as count from (select date(reported) as reported,status,COUNT(*) as count from Wastes w group by date(reported),status  limit "+len+") a GROUP BY reported order by reported desc"
                         , (rs, rowNum) -> {
                             r _r = new r(rs.getTimestamp("reported"));
                             max[0] = new Date(Math.max(max[0].getTime(), _r.getDate().getTime()));
@@ -112,18 +113,19 @@ public class AnalyticsController {
         if (list.isEmpty()) {
             Date d = new Date();
             List<r> l = new ArrayList<>();
-            for (int i = 0; i < 14; i++) {
+            for (int i = 0; i < len; i++) {
                 l.add(new r(new Timestamp(d.getTime()), 0, 0));
             }
             return l.stream().sorted(Comparator.comparingLong(x -> x.date.getTime())).toList();
         }
         Date d = list.get(max[0]).getDate();
 
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < len; i++) {
             list.putIfAbsent(d, new r(new Timestamp(d.getTime()), 0, 0));
             d = previousDateString(d);
         }
-        return list.values().stream().sorted(Comparator.comparingLong(x -> x.date.getTime())).limit(14).toList();
+//        return list.values().stream().sorted(Comparator.comparingLong(x -> x.date.getTime())).limit(14).toList();
+        return list.values().stream().sorted((a, b) -> -Long.compare(a.getDate().getTime(), b.getDate().getTime())).limit(len).toList();
     }
 
     private static Date previousDateString(Date myDate) {
