@@ -1,4 +1,4 @@
-package com.ankush.cleancity.RootSpace;
+package com.ankush.cleancity.ManagerSpace;
 
 import com.ankush.cleancity.Users.AuthUser;
 import com.ankush.cleancity.Users.UserMapper;
@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("java/api/rootspace")
+@RequestMapping("java/api/managerspace")
 @Slf4j
-public class RootSpaceController {
+
+public class ManagerSpace {
+
     @Autowired
     UserDetailsManager users;
     @Autowired
@@ -34,19 +36,21 @@ public class RootSpaceController {
         return getWorker(template);
     }
 
-    @PostMapping("addManager")
+    @PostMapping("addAdmin")
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
-        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ADMIN","MANAGER").build();
+        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ADMIN").build();
         if (users.userExists(user.getUsername())) {
             return ResponseEntity.badRequest().body(Map.of("error", "username", "desc", "USER ALREADY EXISTS"));
         }
         users.createUser(details);
         user.insertDetails(template);
-        return ResponseEntity.ok("CREATED MANAGER");
+        return ResponseEntity.ok("CREATED ADMIN");
     }
 
     public AuthUser getWorker(JdbcTemplate template) {
         User user = Utils.getUser();
         return template.queryForObject("select * from UserDetails where username=?", userMapper, user.getUsername());
     }
+
+
 }

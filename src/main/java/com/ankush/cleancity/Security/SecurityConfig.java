@@ -101,12 +101,15 @@ public class SecurityConfig {
                                 .requestMatchers("/java/api/waste/**").permitAll()
 //                        .requestMatchers("/java/api/user/**").hasAnyAuthority("USER","ADMIN")
                                 .requestMatchers("/java/api/userspace/**").hasAnyAuthority("USER")
-                                .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("USER", "ADMIN")
-                                .requestMatchers("/java/api/analytics/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/java/api/adminspace/**").hasAnyAuthority("ADMIN")
+                                .requestMatchers("/java/api/analytics/**").hasAnyAuthority("ADMIN")
                                 .requestMatchers("/java/api/mail/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/java/api/auth/login_page").permitAll()
                                 .requestMatchers("/login").permitAll()
+                                .requestMatchers("/java/api/cheats/**").permitAll()
+                                .requestMatchers("/java/api/rootspace/**").hasAnyAuthority("ROOT")
+                                .requestMatchers("/java/api/managerspace/**").hasAnyAuthority("MANAGER")
 //                        .requestMatchers("/login*").permitAll()
                 ).build();
     }

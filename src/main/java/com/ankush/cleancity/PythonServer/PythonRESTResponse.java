@@ -8,5 +8,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PythonRESTResponse {
-    private String des;
+    private String prediction;
 }

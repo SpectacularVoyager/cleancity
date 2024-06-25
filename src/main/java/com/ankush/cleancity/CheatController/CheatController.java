@@ -1,8 +1,7 @@
-package com.ankush.cleancity.RootSpace;
+package com.ankush.cleancity.CheatController;
 
 import com.ankush.cleancity.Users.AuthUser;
 import com.ankush.cleancity.Users.UserMapper;
-import com.ankush.cleancity.Utils.Utils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("java/api/rootspace")
+@RequestMapping("java/api/cheats")
 @Slf4j
-public class RootSpaceController {
+public class CheatController {
     @Autowired
     UserDetailsManager users;
     @Autowired
@@ -29,24 +28,19 @@ public class RootSpaceController {
     @Autowired
     PasswordEncoder encoder;
 
-    @GetMapping("get")
-    public AuthUser get() {
-        return getWorker(template);
-    }
-
-    @PostMapping("addManager")
+    @PostMapping("addRoot")
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
-        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ADMIN","MANAGER").build();
+        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ROOT").build();
         if (users.userExists(user.getUsername())) {
             return ResponseEntity.badRequest().body(Map.of("error", "username", "desc", "USER ALREADY EXISTS"));
         }
         users.createUser(details);
         user.insertDetails(template);
-        return ResponseEntity.ok("CREATED MANAGER");
+        return ResponseEntity.ok("CREATED ROOT");
+    }
+    @GetMapping
+    public String test(){
+        return "HEY";
     }
 
-    public AuthUser getWorker(JdbcTemplate template) {
-        User user = Utils.getUser();
-        return template.queryForObject("select * from UserDetails where username=?", userMapper, user.getUsername());
-    }
 }

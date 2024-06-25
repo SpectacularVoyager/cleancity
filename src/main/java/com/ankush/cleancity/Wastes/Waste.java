@@ -50,6 +50,7 @@ public class Waste {
     String invalidComplaintMessage = "";
     String siteType;
     private String resolved_id;
+    private boolean invalidAI;
 
 
     public void insert(FeatureService featureService, JdbcTemplate template) {
@@ -57,7 +58,9 @@ public class Waste {
         this.reported = new Date(System.currentTimeMillis());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(template).withTableName("Wastes").usingColumns(
                         "username", "location", "latitude", "longitude", "severity", "status", "reported",
-                        "dustbin_nearby", "dustbin_overflow", "pmc_clean_site", "site_clean_frequency", "site_unclean_duration", "description", "complaint_url_image", "solved_image_url", "geohash", "invalid_complaint_msg", "site_type", "resolved_id"
+                        "dustbin_nearby", "dustbin_overflow", "pmc_clean_site", "site_clean_frequency", "site_unclean_duration",
+                        "description", "complaint_url_image", "solved_image_url", "geohash", "invalid_complaint_msg", "site_type",
+                        "resolved_id","invalid_ai"
                 )
                 .usingGeneratedKeyColumns("id");
         ;
@@ -85,6 +88,7 @@ public class Waste {
         values.put("invalid_complaint_msg", invalidComplaintMessage);
         values.put("site_type", siteType);
         values.put("resolved_id", resolved_id);
+        values.put("invalid_ai", invalidAI);
 
         simpleJdbcInsert.compile();
         id = simpleJdbcInsert.executeAndReturnKey(values).longValue();

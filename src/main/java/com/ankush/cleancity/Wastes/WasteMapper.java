@@ -46,6 +46,8 @@ public class WasteMapper implements RowMapper<Waste> {
         w.setSiteType(rs.getString("w.site_type"));
 //        private String resolved_id
         w.setResolved_id(rs.getString("w.resolved_id"));
+
+        w.setInvalidAI(rs.getBoolean("w.invalid_ai"));
         return w;
     }
 }
