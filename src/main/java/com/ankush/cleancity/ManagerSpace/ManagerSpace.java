@@ -71,12 +71,9 @@ public class ManagerSpace {
 
     @GetMapping("getWorkerStats")
     public List<EmployeeLog> getstats() {
-        String sql = "select w.resolved_id, count(w.resolved_id) as count from Wastes w left join users u on u.username = w.username inner join " +
-                "UserDetails ud on ud.username = u.username " +
-                "where w.resolved_id is not null " +
-                "group by w.resolved_id ";
+        String sql = "select u.username,count(w.id) as count from (select u.username from users u right join authorities a on a.username =u.username where a.authority =\"ADMIN\") u left join Wastes w on u.username =w.resolved_id group by u.username";
 
-        return template.query(sql, (rs, rowNum) -> new EmployeeLog(rs.getString("resolved_id"), rs.getLong("count")));
+        return template.query(sql, (rs, rowNum) -> new EmployeeLog(rs.getString("username"), rs.getLong("count")));
     }
 
 //    select w.resolved_id ,count(w.resolved_id) from Wastes w left join users u on u.username =w.username inner join UserDetails ud on ud.username =u.username
