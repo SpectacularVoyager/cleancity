@@ -26,7 +26,6 @@ public class AuthUser {
     private String email;
 
     @Size(min = 8)
-    @NotBlank
     private String phone;
 
     //    @Size(min = 8)
