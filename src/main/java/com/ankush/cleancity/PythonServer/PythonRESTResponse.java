@@ -3,10 +3,11 @@ package com.ankush.cleancity.PythonServer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
-@Setter
+@Setter@ToString
 public class PythonRESTResponse {
-    private String prediction;
+    private String detected;
 }

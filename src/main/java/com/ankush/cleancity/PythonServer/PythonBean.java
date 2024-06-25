@@ -13,7 +13,7 @@ public class PythonBean {
 
 
     public PythonRESTResponse getPythonResponse(PythonRESTObject in) {
-        String URL="http://localhost:5000/predict";
+        String URL="http://localhost:3003/imagepredict";
         return template.postForObject(URL, in, PythonRESTResponse.class);
     }
 }

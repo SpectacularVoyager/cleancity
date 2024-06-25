@@ -1,6 +1,9 @@
 package com.ankush.cleancity.UserSpace;
 
 import com.ankush.cleancity.Features.FeatureService;
+import com.ankush.cleancity.PythonServer.PythonBean;
+import com.ankush.cleancity.PythonServer.PythonRESTObject;
+import com.ankush.cleancity.PythonServer.PythonRESTResponse;
 import com.ankush.cleancity.Query.NamedParameter;
 import com.ankush.cleancity.Query.NamedParameterRowMapper;
 import com.ankush.cleancity.Users.AuthUser;
@@ -39,6 +42,8 @@ public class UserSpaceController {
     WasteMapper wasteMapper = new WasteMapper();
     NamedParameterRowMapper issueStatus = new NamedParameterRowMapper("status", "count", Long.class);
 
+    @Autowired
+    PythonBean pythonBean;
 
     public static String getQuery(String where) {
         return String.format("select w.*,GROUP_CONCAT(wt.type) as types from Wastes w right join WasteType wt on w.id = wt.id where " +
@@ -57,6 +62,15 @@ public class UserSpaceController {
             log.error("SQL ERROR", e);
             return ResponseEntity.badRequest().body(String.format("COULD NOT ADD %s", w));
         }
+        log.info("ADDED {}",w);
+        new Thread(() -> {
+            PythonRESTResponse res = pythonBean.getPythonResponse(new PythonRESTObject(w.getImageURL()));
+            if (res.getDetected().trim().equalsIgnoreCase("clean environment")) {
+                w.setInvalidAI(true);
+                template.update("update Wastes set invalid_ai=true where id=?", w.getId());
+            }
+            log.info("WASTE {}", res);
+        }).start();
         return ResponseEntity.ok(w);
     }
 

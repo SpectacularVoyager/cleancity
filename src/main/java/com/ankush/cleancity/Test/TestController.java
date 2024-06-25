@@ -25,7 +25,7 @@ public class TestController {
     public String python() {
         log.info("LOG");
         try {
-            String s= python.getPythonResponse(new PythonRESTObject(url)).getPrediction();
+            String s= python.getPythonResponse(new PythonRESTObject(url)).getDetected();
             log.info("INFO {}",s);
             return s;
         }catch (Exception e){
