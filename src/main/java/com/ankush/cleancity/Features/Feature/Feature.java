@@ -19,6 +19,9 @@ public class Feature {
     public Feature(JSONObject object) {
         List<Point2D> points = new ArrayList<>();
         name = (String) ((JSONObject) object.get("properties")).get("name-mr");
+        if(name==null){
+            name = (String) ((JSONObject) object.get("properties")).get("Zone_Name");
+        }
         JSONArray array = (JSONArray) (((JSONObject) object.get("geometry")).get("coordinates"));
         if (array.size() > 1) {
             throw new UnsupportedOperationException("CURRENTLY ONLY SUPPORT One geometry per feature");

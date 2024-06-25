@@ -21,6 +21,7 @@ public class FeatureService {
 
     public FeatureService() throws IOException, ParseException {
         map.put("pune", new City(new File("res/pune.geojson")));
+        map.put("chennai", new City(new File("res/chennai.geojson")));
     }
 
     public Optional<Feature> getFromCoords(String name, double lat, double lon) {
@@ -39,7 +40,7 @@ public class FeatureService {
         return getFromCoords(city.get(), lat, lon);
     }
 
-    private City getCity(String s) {
+    public City getCity(String s) {
         if (!map.containsKey(s)) throw new RuntimeException(String.format("CITY %s NOT FOUND", s));
         return map.get(s);
     }

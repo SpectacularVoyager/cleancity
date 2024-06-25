@@ -76,6 +76,11 @@ public class ManagerSpace {
         return template.query(sql, (rs, rowNum) -> new EmployeeLog(rs.getString("username"), rs.getLong("count")));
     }
 
+    @GetMapping("getManagers")
+    public List<AuthUser> getManagers() {
+        return template.query("select ud.* from authorities a left join UserDetails ud on ud.username =a.username where a.authority in('MANAGER')", userMapper);
+    }
+
 //    select w.resolved_id ,count(w.resolved_id) from Wastes w left join users u on u.username =w.username inner join UserDetails ud on ud.username =u.username
 //    where w.resolved_id is not null
 //    group by w.resolved_id

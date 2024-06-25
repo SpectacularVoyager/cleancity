@@ -20,6 +20,7 @@ public class RunnableSendSimpleMail implements Runnable {
     @Override
     public void run() {
         try {
+            log.info("SENDING MAIL TO:{}", Arrays.toString(message.getTo()));
             mailSender.send(message);
             log.info("SENT MAIL TO:{}", Arrays.toString(message.getTo()));
         } catch (Exception e) {

@@ -9,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Component
 @Slf4j
 public class MailBean {
     @Autowired
     private JavaMailSender emailSender;
+
 
     public void sendSimpleEmail(String email, String subject, String text, Waste w) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -23,7 +26,7 @@ public class MailBean {
         message.setSubject(subject);
         message.setText(text);
         new Thread(new RunnableSendSimpleMail(message, emailSender)).start();
-        log.info("EMAIL SENT TO {}", email);
+//        log.info("EMAIL SENT TO {} , {}", email,text);
     }
 
 
@@ -48,8 +51,8 @@ public class MailBean {
     }
 
     public void complaintRaised(String manager, Waste w) {
-        sendSimpleEmail(manager, "Invalid AI", "invalidated", w);
-
+        log.info("MANAGER MAILED {}", manager);
+        sendSimpleEmail(manager, "Complaint Raised", "manager", w);
     }
 
 

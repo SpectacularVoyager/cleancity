@@ -66,7 +66,7 @@ public class Waste {
         ;
         Map<String, Object> values = new HashMap<>();
 
-        this.location = featureService.getFromCoords("pune", coordinates.getLatitude(), coordinates.getLongitude()).map(Feature::getName).orElse("NOT IN WARD");
+        this.location = featureService.getFromCoords("chennai", coordinates.getLatitude(), coordinates.getLongitude()).map(Feature::getName).orElse("NOT IN WARD");
 //        values.put("id", 10);
         log.info(this.toString());
         values.put("username", username);

@@ -1,5 +1,6 @@
 package com.ankush.cleancity.UserSpace;
 
+import com.ankush.cleancity.Analytics.AnalyticsController;
 import com.ankush.cleancity.Features.FeatureService;
 import com.ankush.cleancity.MailStuff.MailBean;
 import com.ankush.cleancity.MailStuff.MailController;
@@ -52,6 +53,9 @@ public class UserSpaceController {
 
     @Autowired
     MailBean mailBean;
+
+    @Autowired
+    AnalyticsController analyticsController;
 
     public static String getQuery(String where) {
         return String.format("select w.*,GROUP_CONCAT(wt.type) as types from Wastes w right join WasteType wt on w.id = wt.id where " +
@@ -132,6 +136,9 @@ public class UserSpaceController {
         ret.putIfAbsent("TOTAL", ret.values().stream().reduce(0L, Long::sum));
         return ret;
     }
-
+    @GetMapping("footer")
+    public Map<String, Long> getFooter() {
+       return analyticsController.getFooter();
+    }
 
 }

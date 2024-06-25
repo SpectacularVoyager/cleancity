@@ -1,6 +1,8 @@
 package com.ankush.cleancity.MailStuff;
 
+import org.apache.catalina.webresources.FileResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +19,8 @@ public class MailController {
     private SpringTemplateEngine thymeleafTemplateEngine;
     @Autowired
     private JavaMailSender emailSender;
+
+    FileSystemResource res=new FileSystemResource("");
 
     @RequestMapping("send")
     public ResponseEntity<?> sendMail() {
@@ -38,6 +42,17 @@ public class MailController {
         message.setText(msg);
         emailSender.send(message);
         return ResponseEntity.ok("SENT:\t" + email + "\t" + msg);
+    }
+
+    @RequestMapping("sendF/{email}")
+    public ResponseEntity<?> sendFormatted(@PathVariable String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("cleancityconnect@healthierme.in");
+        message.setTo(email);
+        message.setSubject("HELLO :)");
+//        message.setText(String.format());
+        emailSender.send(message);
+        return ResponseEntity.ok("SENT:\t" + email);
     }
 
     @RequestMapping("test/{email}")
