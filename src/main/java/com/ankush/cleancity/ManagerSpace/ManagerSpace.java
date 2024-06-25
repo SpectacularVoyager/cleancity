@@ -38,7 +38,7 @@ public class ManagerSpace {
 
     @PostMapping("addAdmin")
     public ResponseEntity<?> signup(@Valid @RequestBody AuthUser user) {
-        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ADMIN").build();
+        UserDetails details = User.withUsername(user.getUsername()).password(encoder.encode(user.getPassword())).authorities("ADMIN","USER").build();
         if (users.userExists(user.getUsername())) {
             return ResponseEntity.badRequest().body(Map.of("error", "username", "desc", "USER ALREADY EXISTS"));
         }
