@@ -67,7 +67,7 @@ public class MailBean {
                     </div>
                     <div class="content">
                         <p>Dear Manager,</p>
-                        <p>A new complaint has been raised in your ward. Please review the details and take the necessary actions to resolve it.</p>
+                        <p>A new complaint ___LINK___ has been raised in your ward. Please review the details and take the necessary actions to resolve it.</p>
                         <p>Thank you for your attention.</p>
                     </div>
                     <div class="footer">
@@ -125,7 +125,7 @@ public class MailBean {
                     </div>
                     <div class="content">
                         <p>Dear User,</p>
-                        <p>We are pleased to inform you that your complaint has been resolved. Thank you for helping us keep our city clean.</p>
+                        <p>We are pleased to inform you that your complaint ___LINK___ has been resolved. Thank you for helping us keep our city clean.</p>
                         <p>Thank you for using Clean City Connect.</p>
                     </div>
                     <div class="footer">
@@ -183,7 +183,7 @@ public class MailBean {
                                        </div>
                                        <div class="content">
                                            <p>Dear User,</p>
-                                           <p>Your complaint has been marked as invalid. Please make sure to provide accurate information and valid proof of the issue you are reporting.</p>
+                                           <p>Your complaint ___LINK___ has been marked as invalid. Please make sure to provide accurate information and valid proof of the issue you are reporting.</p>
                                            <p>Thank you for using Clean City Connect.</p>
                                        </div>
                                        <div class="footer">
@@ -242,6 +242,8 @@ public class MailBean {
                     <div class="content">
                         <p>Dear User,</p>
                         <p>Our system has detected that the image you uploaded is invalid. Please upload a clear image of the issue you are reporting.</p>
+                        <p>___LINK___</p>
+
                         <p>Thank you for using Clean City Connect.</p>
                     </div>
                     <div class="footer">
@@ -292,23 +294,33 @@ public class MailBean {
 //        message.setText(msg);
 //        new Thread(new RunnableSendSimpleMail(message, emailSender)).start();
 //        sendSimpleEmail(w.getEmail(), "Complaint Acknowledged", msg, w.getWaste());
-        sendMimeMail(w.getEmail(), "Your complaint has been resolved", COMPLAINT_RESOLVED, w.getWaste());
+        sendMimeMail(w.getEmail(), "Your complaint has been resolved", getFormatted(COMPLAINT_RESOLVED, w.getWaste()), w.getWaste());
 
     }
 
     public void notifyInvalidPerson(EmailedWaste w) {
-        sendSimpleEmail(w.getEmail(), "Invalid person", "invalidated", w.getWaste());
+        sendMimeMail(w.getEmail(), "COMPLAINT FLAGGED INVALID ", getFormatted(COMPLAINT_INVALID_PERSON, w.getWaste()), w.getWaste());
     }
 
     public void notifyInvalidAI(EmailedWaste w) {
-        sendSimpleEmail(w.getEmail(), "Invalid AI", "invalidated", w.getWaste());
+//        sendSimpleEmail(w.getEmail(), "Invalid AI", "invalidated", w.getWaste());
+        sendMimeMail(w.getEmail(), "COMPLAINT FLAGGED INVALID BY AI", getFormatted(COMPLAINT_INVALID_AI, w.getWaste()), w.getWaste());
+
 
     }
 
     public void complaintRaised(String manager, Waste w) {
         log.info("MANAGER MAILED {}", manager);
 //        sendSimpleEmail(manager, "Complaint Raised At " + w.getLocation(), String.format(COMPLAINT_RAISED, w.getLocation()), w);
-        sendMimeMail(manager, "Complaint Raised At " + w.getLocation(), COMPLAINT_RAISED, w);
+        sendMimeMail(manager, "Complaint Raised At " + w.getLocation(), getFormatted(COMPLAINT_RAISED, w), w);
+    }
+
+    String ip = "localhost";
+
+    public String getFormatted(String s, Waste w) {
+//        log.info("INFO");
+//        return s.replace("___LINK___", String.format("<a href=\"https://%s/profile/complaints/%s\"></a>", ip, w.getId()));
+        return s;
     }
 
 

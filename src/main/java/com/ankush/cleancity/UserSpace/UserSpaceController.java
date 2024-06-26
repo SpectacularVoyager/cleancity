@@ -82,6 +82,7 @@ public class UserSpaceController {
         new Thread(() -> {
             PythonRESTResponse res = pythonBean.getPythonResponse(new PythonRESTObject(w.getImageURL()));
             if (res.getDetected().trim().equalsIgnoreCase("clean environment")) {
+                log.info("");
                 w.setInvalidAI(true);
                 template.update("update Wastes set invalid_ai=true where id=?", w.getId());
                 mailBean.notifyInvalidAI(EmailedWaste.get(template, w.getId()));
