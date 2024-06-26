@@ -81,7 +81,7 @@ public class UserSpaceController {
         ;
         new Thread(() -> {
             PythonRESTResponse res = pythonBean.getPythonResponse(new PythonRESTObject(w.getImageURL()));
-            if (!res.getDetected().trim().equalsIgnoreCase("clean environment")) {
+            if (res.getDetected().trim().equalsIgnoreCase("clean environment")) {
                 w.setInvalidAI(true);
                 template.update("update Wastes set invalid_ai=true where id=?", w.getId());
                 mailBean.notifyInvalidAI(EmailedWaste.get(template, w.getId()));
@@ -103,6 +103,15 @@ public class UserSpaceController {
                 Utils.getUser().getUsername());
 
     }
+
+    @GetMapping("getComplaint/{id}")
+    public Optional<Waste> getComplaint(@PathVariable long id) {
+        return template.query(
+                getQuery("w.id=?"), wasteMapper,
+                id).stream().findFirst();
+
+    }
+
 
     @GetMapping("complaints/{id}")
     public Optional<Waste> complaint(@PathVariable long id) {
@@ -136,9 +145,10 @@ public class UserSpaceController {
         ret.putIfAbsent("TOTAL", ret.values().stream().reduce(0L, Long::sum));
         return ret;
     }
+
     @GetMapping("footer")
     public Map<String, Long> getFooter() {
-       return analyticsController.getFooter();
+        return analyticsController.getFooter();
     }
 
 }

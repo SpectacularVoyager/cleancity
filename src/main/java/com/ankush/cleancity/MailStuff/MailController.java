@@ -1,5 +1,7 @@
 package com.ankush.cleancity.MailStuff;
 
+import com.ankush.cleancity.Wastes.EmailedWaste;
+import com.ankush.cleancity.Wastes.Waste;
 import org.apache.catalina.webresources.FileResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -19,8 +21,8 @@ public class MailController {
     private SpringTemplateEngine thymeleafTemplateEngine;
     @Autowired
     private JavaMailSender emailSender;
-
-    FileSystemResource res=new FileSystemResource("");
+    @Autowired
+    MailBean mailBean;
 
     @RequestMapping("send")
     public ResponseEntity<?> sendMail() {
@@ -30,8 +32,10 @@ public class MailController {
         message.setSubject("HELLO :)");
         message.setText("HELLO WORLD");
         emailSender.send(message);
+
         return ResponseEntity.ok("SENT");
     }
+
 
     @RequestMapping("send/{email}/{msg}")
     public ResponseEntity<?> sendMailTo(@PathVariable String email, @PathVariable String msg) {
@@ -57,17 +61,10 @@ public class MailController {
 
     @RequestMapping("test/{email}")
     public ResponseEntity<?> test(@PathVariable String email) {
-        Context thymeleafContext = new Context();
-//        thymeleafContext.setVariables(templateModel);
-
-        String htmlBody = thymeleafTemplateEngine.process("simple.html", thymeleafContext);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("cleancityconnect@healthierme.in");
-        message.setTo(email);
-        message.setSubject("HELLO :)");
-        message.setText(htmlBody);
-        emailSender.send(message);
-        return ResponseEntity.ok("SENT:\t" + email + "\t" + htmlBody);
+        Waste w = new Waste();
+        w.setLocation("Abc");
+        mailBean.notifyComplaint(new EmailedWaste(w, email));
+        return ResponseEntity.ok("OK");
     }
 
 }

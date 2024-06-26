@@ -59,15 +59,12 @@ public class AdminSpaceController {
 //        );
         EmailedWaste w = EmailedWaste.get(template, id.getId());
         mails.notifyComplaint(w);
-        System.out.println(w);
     }
 
     @PostMapping("getComplaints")
     public List<Waste> complaints(@RequestBody ComplaintQuery query) {
         CompiledQuery c = query.compile();
-        System.out.println(c);
         List<Waste> l = template.query(c.getBase(), wasteMapper, c.getValues());
-        System.out.println(l);
         return l;
     }
 
